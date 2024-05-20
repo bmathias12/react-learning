@@ -7,8 +7,21 @@
     <script type="text/jsx">
       // Select the div element with 'app' id
       const app = document.getElementById('app');
+
+      function Header() {
+        return <h1>Develop. Preview. Ship.</h1>;
+      }
+
+      function HomePage() {
+        return (
+          <div>
+            <Header />
+          </div>
+        );
+      }
+
       const root = ReactDOM.createRoot(app);
-      root.render(<h1>Develop. Preview. Ship.</h1>);
+      root.render(<HomePage />);
     </script>
   </body>
 </html>
