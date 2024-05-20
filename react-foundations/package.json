@@ -1,14 +1,7 @@
 {
-  "name": "react-foundations",
-  "version": "1.0.0",
-  "description": "Course from:",
-  "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "next dev"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
   "dependencies": {
     "next": "^14.2.3",
     "react": "^18.3.1",
