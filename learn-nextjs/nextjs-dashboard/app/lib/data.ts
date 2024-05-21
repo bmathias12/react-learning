@@ -1,4 +1,4 @@
-import { sql } from '@vercel/postgres';
+import pg from 'pg'
 import {
   CustomerField,
   CustomersTableType,
@@ -9,6 +9,17 @@ import {
   Revenue,
 } from './definitions';
 import { formatCurrency } from './utils';
+require('dotenv').config();
+
+const { Client } = pg
+
+const client = new Client({
+  user: process.env.DB_USER,
+  host: process.env.DB_HOST,
+  database: process.env.DB_NAME,
+  password: process.env.DB_PASSWORD,
+  port: process.env.DB_PORT,
+});
 
 export async function fetchRevenue() {
   // Add noStore() here to prevent the response from being cached.
@@ -21,15 +32,20 @@ export async function fetchRevenue() {
     // console.log('Fetching revenue data...');
     // await new Promise((resolve) => setTimeout(resolve, 3000));
 
-    const data = await sql<Revenue>`SELECT * FROM revenue`;
+    await client.connect()
 
-    // console.log('Data fetch completed after 3 seconds.');
+    const data = await client.query(`SELECT * FROM revenue`);
+
+    //console.log(`{data.rows}`, data.rows);
 
     return data.rows;
   } catch (error) {
     console.error('Database Error:', error);
     throw new Error('Failed to fetch revenue data.');
+  } finally {
+    await client.end()
   }
+
 }
 
 export async function fetchLatestInvoices() {
