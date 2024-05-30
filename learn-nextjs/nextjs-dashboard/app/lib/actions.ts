@@ -83,7 +83,16 @@ export async function updateInvoice(id: string, formData: FormData) {
     throw new Error('Failed to update invoice.');
   }
 
- 
   revalidatePath('/dashboard/invoices');
   redirect('/dashboard/invoices');
+}
+
+export async function deleteInvoice(id: string) {
+    try {
+        await client.query(`DELETE FROM invoices WHERE id = $1`, [id]);
+      } catch (error) {
+        console.error('Database Error:', error);
+        throw new Error('Failed to update invoice.');
+      }
+    revalidatePath('/dashboard/invoices');
 }
