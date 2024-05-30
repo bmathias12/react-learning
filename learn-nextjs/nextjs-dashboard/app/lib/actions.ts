@@ -1,5 +1,7 @@
 'use server';
 
+import { signIn } from '@/auth';
+import { AuthError } from 'next-auth';
 import pg from 'pg'
 import { z } from 'zod';
 import { revalidatePath } from 'next/cache';
@@ -112,7 +114,6 @@ export async function updateInvoice(id: string, formData: FormData) {
 }
 
 export async function deleteInvoice(id: string) {
-    throw new Error('Failed to Delete Invoice');
     try {
         await client.query(`DELETE FROM invoices WHERE id = $1`, [id]);
       } catch (error) {
@@ -120,4 +121,23 @@ export async function deleteInvoice(id: string) {
         throw new Error('Failed to update invoice.');
       }
     revalidatePath('/dashboard/invoices');
+}
+
+export async function authenticate(
+  prevState: string | undefined,
+  formData: FormData,
+) {
+  try {
+    await signIn('credentials', formData);
+  } catch (error) {
+    if (error instanceof AuthError) {
+      switch (error.type) {
+        case 'CredentialsSignin':
+          return 'Invalid credentials.';
+        default:
+          return 'Something went wrong.';
+      }
+    }
+    throw error;
+  }
 }
